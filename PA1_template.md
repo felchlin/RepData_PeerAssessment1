@@ -300,7 +300,7 @@ steps_median.imputed - steps_median
 The mean and median both became larger, and they became closer to each other. Actually, they seem to be nearly identical.
 <br><br>
 **Distribution:**  
-The original distribution had a relatively large number of days that had a small number of total steps, which is seen in the "peak" between 0-2000 steps. The original distribution also had a "peak" between 10,000 and 12,000 steps. The new distribution only has a single "peak" - also between 10,000 and 12,000 steps - and is relatively symmetric around the mean. The mean being very close to the median is a reflection of the relative symmetry in the new distribution.
+The original distribution had a relatively large number of days that had a small number of total steps, which is seen in the "peak" between 0-2000 steps. The original distribution also had a "peak" between 10,000 and 12,000 steps. The new distribution only has a single "peak" - also between 10,000 and 12,000 steps - and is relatively symmetric around the mean. The mean being very close to the median is a reflection of the relative symmetry in the new distribution and the high concentration of data around the mean.
 <br>
 ---
 ---
@@ -311,7 +311,7 @@ The original distribution had a relatively large number of days that had a small
 
 ```r
 # Character vector of weekday name in string form
-all_days <- weekdays(mydata$date)
+all_days <- weekdays(mydata.imputed$date)
 
 # Logical vector for weekend days
 weekends.logi <- grepl("^(Saturday|Sunday)$", all_days)
@@ -351,7 +351,7 @@ x_axis_ticks <- seq(
 
 # Plot the line graph
 g <- ggplot(steps_by_interval, aes(interval, steps)) +
-    geom_line(aes(color=DayType)) +
+    geom_line() +
     facet_grid(DayType ~ .) +
     theme(legend.position="none") +
     xlab("5-minute interval") +
