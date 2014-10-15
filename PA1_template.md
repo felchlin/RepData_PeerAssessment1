@@ -1,9 +1,7 @@
 ## Loading and preprocessing the data
-```{r setup, echo=FALSE}
-library(knitr)
-opts_chunk$set(echo=TRUE)
-```
-```{r load_process_data}
+
+
+```r
 # Load ggplot2 library since we will use it for plots
 library(ggplot2)
 
@@ -20,7 +18,8 @@ mydata$date <- as.Date(mydata$date)
 ## What is mean total number of steps taken per day?
 
 #### 1. Make a histogram of the total number of steps taken each day
-```{r question_1_1}
+
+```r
 # Sum steps by date
 steps_by_date <- aggregate(mydata$steps,
                            by=list(date=mydata$date),
@@ -40,19 +39,32 @@ qplot(steps,
       binwidth=2000
      )
 ```
+
+![plot of chunk question_1_1](figure/question_1_1.png) 
 <br>
 
 #### 2. Calculate and report the *mean* and *median* total number of steps taken per day
-```{r question_1_2}
+
+```r
 # mean steps per date
 (steps_mean <- mean(steps_by_date$steps, na.rm=TRUE))
+```
 
+```
+## [1] 9354
+```
+
+```r
 # median steps per date
 (steps_median <- median(steps_by_date$steps, na.rm=TRUE))
 ```
 
-**The mean total number of steps taken per day = steps_mean = <font color="blue">`r steps_mean`</font>.**  
-**The median total number of steps taken per day = steps_median = <font color="blue">`r steps_median`</font>.**
+```
+## [1] 10395
+```
+
+**The mean total number of steps taken per day = steps_mean = <font color="blue">9354.2295</font>.**  
+**The median total number of steps taken per day = steps_median = <font color="blue">10395</font>.**
 <br>
 ---
 ---
@@ -60,7 +72,8 @@ qplot(steps,
 ## What is the average daily activity pattern?
 
 #### 1. Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
-```{r question_2_1}
+
+```r
 # Average steps by interval
 steps_by_interval <- aggregate(mydata$steps,
                                by=list(interval=mydata$interval),
@@ -91,15 +104,22 @@ g <- ggplot(steps_by_interval, aes(interval, steps)) +
 print(g)
 ```
 
+![plot of chunk question_2_1](figure/question_2_1.png) 
+
 #### 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
-```{r question_2_2}
+
+```r
 # Get the maximum of the average number of steps over all intervals
 max_steps <- max(steps_by_interval$steps, na.rm=TRUE)
 max_steps_df <- subset(steps_by_interval, steps==max_steps)
 (max_steps_interval <- max_steps_df[1,"interval"])
 ```
 
-**The 5-minute interval, on average across all the days in the dataset, containing the maximum number of steps = max_steps_interval = <font color="blue">`r max_steps_interval`</font>.**
+```
+## [1] 835
+```
+
+**The 5-minute interval, on average across all the days in the dataset, containing the maximum number of steps = max_steps_interval = <font color="blue">835</font>.**
 <br>
 ---
 ---
@@ -107,7 +127,8 @@ max_steps_df <- subset(steps_by_interval, steps==max_steps)
 ## Imputing missing values
 
 #### 1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
-```{r question_3_1}
+
+```r
 # Get the complete cases
 complete_cases <- complete.cases(mydata)
 
@@ -121,7 +142,11 @@ num_cases_total <- nrow(mydata)
 (num_incomplete_cases <- num_cases_total - num_complete_cases)
 ```
 
-**The total number of missing values in the dataset (i.e. the total number of rows with NAs) = num_incomplete_cases = <font color="blue">`r num_incomplete_cases`</font>.**  
+```
+## [1] 2304
+```
+
+**The total number of missing values in the dataset (i.e. the total number of rows with NAs) = num_incomplete_cases = <font color="blue">2304</font>.**  
 <br>
 
 #### 2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
@@ -135,19 +160,37 @@ I carefully verified that no 'date' values were missing, nor were any 'interval'
 The following code (and its output) justifies this decision:
 <br><br>
 
-```{r imputation_justification}
+
+```r
 # 'steps' column _does_ have missing values, so will impute
 sum(is.na(mydata$steps))
+```
 
+```
+## [1] 2304
+```
+
+```r
 # 'date' column has no missing values; no need to impute
 sum(is.na(mydata$date))
+```
 
+```
+## [1] 0
+```
+
+```r
 # 'interval' column has no missing values; no need to impute
 sum(is.na(mydata$interval))
 ```
 
+```
+## [1] 0
+```
+
 #### 3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
-```{r question_3_3}
+
+```r
 # Use average steps by interval because (1) it is already available/
 # computed (steps_by_interval), and (2) some days have NA's for all
 # intervals, so a mean for the day would be Nan and median would be NA.
@@ -179,7 +222,8 @@ for (i in 1:num_cases_total) {
 ```
 
 #### 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
-```{r question_3_4}
+
+```r
 # Sum steps by date
 steps_by_date <- aggregate(mydata.imputed$steps,
                            by=list(date=mydata.imputed$date),
@@ -198,19 +242,32 @@ qplot(steps,
       binwidth=2000
      )
 ```
+
+![plot of chunk question_3_4](figure/question_3_4.png) 
 <br>
 
 #### Calculate and report the *mean* and *median* total number of steps taken per day
-```{r}
+
+```r
 # mean steps per date
 (steps_mean.imputed <- mean(steps_by_date$steps))
+```
 
+```
+## [1] 10766
+```
+
+```r
 # median steps per date
 (steps_median.imputed <- median(steps_by_date$steps))
 ```
 
-**The mean total number of steps taken per day = steps_mean.imputed = <font color="blue">`r steps_mean.imputed`</font>.**  
-**The median total number of steps taken per day = steps_median.imputed = <font color="blue">`r steps_median.imputed`</font>.**
+```
+## [1] 10766
+```
+
+**The mean total number of steps taken per day = steps_mean.imputed = <font color="blue">1.0766 &times; 10<sup>4</sup></font>.**  
+**The median total number of steps taken per day = steps_median.imputed = <font color="blue">1.0766 &times; 10<sup>4</sup></font>.**
 
 #### Do these values differ from the estimates from the first part of the assignment?
 
@@ -218,12 +275,23 @@ Yes. In the estimates from the first part of the assignment, the mean and median
 The differences between original mean and median, and the mean and median after imputing missing values, is shown as following:
 <br><br>
 
-```{r}
+
+```r
 # Difference between original mean and mean after imputing missing values
 steps_mean.imputed - steps_mean
+```
 
+```
+## [1] 1412
+```
+
+```r
 # Difference between original median and the median after imputing missing values
 steps_median.imputed - steps_median
+```
+
+```
+## [1] 371.2
 ```
 
 #### What is the impact of imputing missing data on the estimates of the total daily number of steps?
@@ -240,7 +308,8 @@ The original distribution had a relatively large number of days that had a small
 ## Are there differences in activity patterns between weekdays and weekends?
 
 #### 1. Create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
-```{r weekends_weekdays}
+
+```r
 # Character vector of weekday name in string form
 all_days <- weekdays(mydata$date)
 
@@ -254,8 +323,13 @@ mydata.imputed$weekdays.f <- factor(weekends.logi, labels = c("weekday", "weeken
 str(mydata.imputed$weekdays.f)
 ```
 
+```
+##  Factor w/ 2 levels "weekday","weekend": 1 1 1 1 1 1 1 1 1 1 ...
+```
+
 #### 2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
-```{r panel_plot}
+
+```r
 # Average steps by interval
 steps_by_interval <- aggregate(mydata.imputed$steps,
                                by=list(interval=mydata.imputed$interval,
@@ -288,5 +362,7 @@ g <- ggplot(steps_by_interval, aes(interval, steps)) +
     theme(axis.text.x=element_text(angle=90))
 print(g)
 ```
+
+![plot of chunk panel_plot](figure/panel_plot.png) 
 
 ---
