@@ -7,11 +7,21 @@ opts_chunk$set(echo=TRUE)
 # Load ggplot2 library since we will use it for plots
 library(ggplot2)
 
+# Unzip the raw data file, if the .csv file is not present
+csvFile <- "activity.csv"
+zipFile <- "activity.zip"
+if ( ! file.exists(csvFile) ) {
+    unzip(zipFile)
+}
+
 # Read in the data file
-mydata <- read.csv("activity.csv")
+mydata <- read.csv(csvFile)
 
 # Transform date strings into Date objects
 mydata$date <- as.Date(mydata$date)
+
+# Transform interval into a factor
+mydata$interval <- as.factor(mydata$interval)
 ```
 <br>
 ---
@@ -71,7 +81,11 @@ steps_by_interval <- aggregate(mydata$steps,
 names(steps_by_interval)[names(steps_by_interval)=="x"] <- "steps"
 
 # Generate x-axis ticks
-max_interval <- max(steps_by_interval$interval)
+max_interval <- max(
+  as.numeric(
+    levels(steps_by_interval$interval)
+    )
+  )
 x_incr <- 100
 x_axis_ticks <- seq(
   from=0, 
@@ -81,7 +95,7 @@ x_axis_ticks <- seq(
 
 # Plot the line graph
 g <- ggplot(steps_by_interval, aes(interval, steps)) +
-    geom_line() +
+    geom_line(aes(group=1)) +
     xlab("5-minute interval") +
     ylab("Steps (average over all days)") +
     labs(title="Average steps per 5-minute interval") +
@@ -267,7 +281,11 @@ steps_by_interval <- aggregate(mydata.imputed$steps,
 names(steps_by_interval)[names(steps_by_interval)=="x"] <- "steps"
 
 # Generate x-axis ticks
-max_interval <- max(steps_by_interval$interval)
+max_interval <- max(
+  as.numeric(
+    levels(steps_by_interval$interval)
+    )
+  )
 x_incr <- 100
 x_axis_ticks <- seq(
   from=0, 
@@ -277,7 +295,7 @@ x_axis_ticks <- seq(
 
 # Plot the line graph
 g <- ggplot(steps_by_interval, aes(interval, steps)) +
-    geom_line() +
+    geom_line(aes(group=1)) +
     facet_grid(DayType ~ .) +
     theme(legend.position="none") +
     xlab("5-minute interval") +

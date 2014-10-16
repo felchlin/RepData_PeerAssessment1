@@ -5,11 +5,21 @@
 # Load ggplot2 library since we will use it for plots
 library(ggplot2)
 
+# Unzip the raw data file, if the .csv file is not present
+csvFile <- "activity.csv"
+zipFile <- "activity.zip"
+if ( ! file.exists(csvFile) ) {
+    unzip(zipFile)
+}
+
 # Read in the data file
-mydata <- read.csv("activity.csv")
+mydata <- read.csv(csvFile)
 
 # Transform date strings into Date objects
 mydata$date <- as.Date(mydata$date)
+
+# Transform interval into a factor
+mydata$interval <- as.factor(mydata$interval)
 ```
 <br>
 ---
@@ -84,7 +94,11 @@ steps_by_interval <- aggregate(mydata$steps,
 names(steps_by_interval)[names(steps_by_interval)=="x"] <- "steps"
 
 # Generate x-axis ticks
-max_interval <- max(steps_by_interval$interval)
+max_interval <- max(
+  as.numeric(
+    levels(steps_by_interval$interval)
+    )
+  )
 x_incr <- 100
 x_axis_ticks <- seq(
   from=0, 
@@ -94,7 +108,7 @@ x_axis_ticks <- seq(
 
 # Plot the line graph
 g <- ggplot(steps_by_interval, aes(interval, steps)) +
-    geom_line() +
+    geom_line(aes(group=1)) +
     xlab("5-minute interval") +
     ylab("Steps (average over all days)") +
     labs(title="Average steps per 5-minute interval") +
@@ -117,6 +131,7 @@ max_steps_df <- subset(steps_by_interval, steps==max_steps)
 
 ```
 ## [1] 835
+## 288 Levels: 0 5 10 15 20 25 30 35 40 45 50 55 100 105 110 115 120 ... 2355
 ```
 
 **The 5-minute interval, on average across all the days in the dataset, containing the maximum number of steps = max_steps_interval = <font color="blue">835</font>.**
@@ -341,7 +356,11 @@ steps_by_interval <- aggregate(mydata.imputed$steps,
 names(steps_by_interval)[names(steps_by_interval)=="x"] <- "steps"
 
 # Generate x-axis ticks
-max_interval <- max(steps_by_interval$interval)
+max_interval <- max(
+  as.numeric(
+    levels(steps_by_interval$interval)
+    )
+  )
 x_incr <- 100
 x_axis_ticks <- seq(
   from=0, 
@@ -351,7 +370,7 @@ x_axis_ticks <- seq(
 
 # Plot the line graph
 g <- ggplot(steps_by_interval, aes(interval, steps)) +
-    geom_line() +
+    geom_line(aes(group=1)) +
     facet_grid(DayType ~ .) +
     theme(legend.position="none") +
     xlab("5-minute interval") +
